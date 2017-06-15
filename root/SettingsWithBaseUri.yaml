@@ -1,0 +1,12 @@
+Neos:
+  Flow:
+    persistence:
+      backendOptions:
+        driver: pdo_mysql
+        dbname: db
+        user: admin
+        password: pass
+        host: db
+        port: 3306
+    http:
+      baseUri: 'BASE_URI'
