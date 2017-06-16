@@ -4,6 +4,7 @@ set -ex
 REPOSITORY_URL=${REPOSITORY_URL:=""}
 BASE_URI=${BASE_URI:=${BASE_URI:=""}}
 
+# Provision conainer at first run
 if [ -f /data/releases/current/composer.json ] || [ -z "$REPOSITORY_URL" ]
 then
 	echo "Do nothing, Neos distr is already there or REPOSITORY_URL env variable not set"
@@ -93,49 +94,9 @@ else
 
 	./flow resource:publish
 
+	chown www-data:www-data -R /tmp/
 	chown www-data:www-data -R /data/
 	chmod g+rwx -R /data/
-	chown www-data:www-data -R /tmp/
+	# Needed to make ssh work
+	chmod 755 /data
 fi
-
-
-
-
-
-
-
-
-
-
-###
-# Self-made supervisor. TODO: replace with smth real.
-###
-set +x
-php-fpm -y /usr/local/etc/php-fpm.conf -R &
-status=$?
-if [ $status -ne 0 ]; then
-	echo "Failed to start php-fpm: $status"
-	exit $status
-fi
-
-nginx &
-status=$?
-if [ $status -ne 0 ]; then
-	echo "Failed to start nginx: $status"
-	exit $status
-fi
-
-# Naive check runs checks once a minute to see if either of the processes exited.
-while /bin/true; do
-	pidof nginx >/dev/null
-	NGINX_RUNNING=$?
-
-	pidof php-fpm >/dev/null
-	FPM_RUNNING=$?
-
-	if [ "$NGINX_RUNNING" -ne 0 -o "$FPM_RUNNING" -ne 0 ]; then
-		echo "One of the processes has already exited."
-		exit -1
-	fi
-	sleep 60
-done

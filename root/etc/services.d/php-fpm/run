@@ -1,0 +1,2 @@
+#!/usr/bin/execlineb -P
+/usr/local/sbin/php-fpm -y /usr/local/etc/php-fpm.conf -R

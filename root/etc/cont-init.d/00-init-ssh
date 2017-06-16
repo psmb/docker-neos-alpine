@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+# Generate SSH host keys on container (re)start if they're not present
+[ -f /etc/ssh/ssh_host_rsa_key ] || ssh-keygen -q -b 1024 -N '' -t rsa -f /etc/ssh/ssh_host_rsa_key
+[ -f /etc/ssh/ssh_host_dsa_key ] || ssh-keygen -q -b 1024 -N '' -t dsa -f /etc/ssh/ssh_host_dsa_key
+[ -f /etc/ssh/ssh_host_ecdsa_key ] || ssh-keygen -q -b 521  -N '' -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key
+[ -f /etc/ssh/ssh_host_ed25519_key ] || ssh-keygen -q -b 1024 -N '' -t ed25519 -f /etc/ssh/ssh_host_ed25519_key
+
+# Unlock 'www-data' account
+PASS=$(pwgen -c -n -1 16)
+echo "www-data:$PASS" | chpasswd
+
+if [ -z "${IMPORT_GITHUB_PUB_KEYS+xxx}" ] || [ -z "${IMPORT_GITHUB_PUB_KEYS}" ]; then
+	echo "WARNING: env variable \$IMPORT_GITHUB_PUB_KEYS is not set. Please set it to have access to this container via SSH."
+else
+	# Read passed to container ENV IMPORT_GITHUB_PUB_KEYS variable with coma-separated
+	# user list and add public key(s) for these users to authorized_keys on 'www-data' account.
+	for user in $(echo $IMPORT_GITHUB_PUB_KEYS | tr "," "\n"); do
+		echo "user: $user"
+		su www-data -c "/github-keys.sh $user"
+	done
+fi
