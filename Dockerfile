@@ -2,10 +2,10 @@ FROM php:7.1-fpm-alpine
 
 MAINTAINER Dmitri Pisarev <dimaip@gmail.com>
 
-ARG PHP_REDIS_VERION="3.1.1"
-ARG PHP_YAML_VERION="2.0.0"
+ARG PHP_REDIS_VERSION="3.1.1"
+ARG PHP_YAML_VERSION="2.0.0"
+ARG S6_VERSION = "1.19.1.1"
 
-ENV FLOW_CONTEXT Development
 ENV FLOW_PATH_TEMPORARY_BASE /tmp
 ENV FLOW_REWRITEURLS 1
 
@@ -17,14 +17,10 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 # Basic build-time metadata as defined at http://label-schema.org
 LABEL org.label-schema.docker.dockerfile="/Dockerfile" \
 	org.label-schema.license="MIT" \
-	org.label-schema.name="Neos Bare Docker Image" \
+	org.label-schema.name="Neos Alpine Docker Image" \
 	org.label-schema.url="https://github.com/psmb/docker-neos-bare" \
 	org.label-schema.vcs-url="https://github.com/psmb/docker-neos-bare" \
 	org.label-schema.vcs-type="Git"
-
-ADD https://github.com/just-containers/s6-overlay/releases/download/v1.19.1.1/s6-overlay-amd64.tar.gz /tmp/
-RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
-
 
 RUN set -x \
 	&& apk update \
@@ -44,7 +40,7 @@ RUN set -x \
 		exif \
 		json \
 		tokenizer \
-	&& pecl install redis-${PHP_REDIS_VERION} yaml-${PHP_YAML_VERION} \
+	&& pecl install redis-${PHP_REDIS_VERSION} yaml-${PHP_YAML_VERSION} \
 	&& docker-php-ext-enable redis \
 	&& docker-php-ext-enable yaml \
 	&& apk del .phpize-deps \
@@ -59,8 +55,11 @@ RUN set -x \
 # Copy configuration
 COPY root /
 
-# Configure PHP
-RUN echo "date.timezone=${PHP_TIMEZONE:-UTC}" > $PHP_INI_DIR/conf.d/date_timezone.ini \
+# Download s6
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-amd64.tar.gz /tmp/
+
+RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && rm /tmp/s6-overlay-amd64.tar.gz \
+	&& echo "date.timezone=${PHP_TIMEZONE:-UTC}" > $PHP_INI_DIR/conf.d/date_timezone.ini \
 	&& echo "memory_limit=${PHP_MEMORY_LIMIT:-2048M}" > $PHP_INI_DIR/conf.d/memory_limit.ini \
 	&& echo "upload_max_filesize=${PHP_UPLOAD_MAX_FILESIZE:-512M}" > $PHP_INI_DIR/conf.d/upload_max_filesize.ini \
 	&& echo "post_max_size=${PHP_UPLOAD_MAX_FILESIZE:-512M}" > $PHP_INI_DIR/conf.d/post_max_size.ini \
@@ -77,14 +76,13 @@ RUN echo "date.timezone=${PHP_TIMEZONE:-UTC}" > $PHP_INI_DIR/conf.d/date_timezon
 	&& echo "listen.group = www-data" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
 	&& echo "listen.mode = 0660" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
 	&& chmod +x /entrypoint.sh \
-	&& chmod +x /github-keys.sh
-
-RUN sed -i -r 's/.?UseDNS\syes/UseDNS no/' /etc/ssh/sshd_config \
-  && sed -i -r 's/.?PasswordAuthentication.+/PasswordAuthentication no/' /etc/ssh/sshd_config \
-  && sed -i -r 's/.?ChallengeResponseAuthentication.+/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config \
-  && sed -i -r 's/.?PermitRootLogin.+/PermitRootLogin no/' /etc/ssh/sshd_config \
-  && sed -i '/secure_path/d' /etc/sudoers \
-  && echo 'www  ALL=(ALL)  NOPASSWD: ALL' > /etc/sudoers.d/www
+	&& chmod +x /github-keys.sh \
+	&& sed -i -r 's/.?UseDNS\syes/UseDNS no/' /etc/ssh/sshd_config \
+	&& sed -i -r 's/.?PasswordAuthentication.+/PasswordAuthentication no/' /etc/ssh/sshd_config \
+	&& sed -i -r 's/.?ChallengeResponseAuthentication.+/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config \
+	&& sed -i -r 's/.?PermitRootLogin.+/PermitRootLogin no/' /etc/ssh/sshd_config \
+	&& sed -i '/secure_path/d' /etc/sudoers \
+	&& echo 'www  ALL=(ALL)  NOPASSWD: ALL' > /etc/sudoers.d/www
 
 # Expose ports
 EXPOSE 80 22
