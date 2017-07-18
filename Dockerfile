@@ -4,6 +4,7 @@ MAINTAINER Dmitri Pisarev <dimaip@gmail.com>
 
 ARG PHP_REDIS_VERSION="3.1.1"
 ARG PHP_YAML_VERSION="2.0.0"
+ARG PHP_XDEBUG_VERSION="2.5.5"
 ARG S6_VERSION="1.19.1.1"
 
 ENV FLOW_PATH_TEMPORARY_BASE /tmp
@@ -40,7 +41,8 @@ RUN set -x \
 		exif \
 		json \
 		tokenizer \
-	&& pecl install redis-${PHP_REDIS_VERSION} yaml-${PHP_YAML_VERSION} \
+	&& pecl install redis-${PHP_REDIS_VERSION} yaml-${PHP_YAML_VERSION} xdebug-${PHP_XDEBUG_VERSION} \
+	&& docker-php-ext-enable xdebug \
 	&& docker-php-ext-enable redis \
 	&& docker-php-ext-enable yaml \
 	&& apk del .phpize-deps \
@@ -66,6 +68,11 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && rm /tmp/s6-overlay-amd64.tar.gz
 	&& echo "allow_url_include=${PHP_ALLOW_URL_INCLUDE:-1}" > $PHP_INI_DIR/conf.d/allow_url_include.ini \
 	&& echo "max_execution_time=${PHP_MAX_EXECUTION_TIME:-240}" > $PHP_INI_DIR/conf.d/max_execution_time.ini \
 	&& echo "max_input_vars=${PHP_MAX_INPUT_VARS:-1500}" > $PHP_INI_DIR/conf.d/max_input_vars.ini \
+	&& echo "xdebug.remote_enable=0" >> $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini \
+	&& echo "xdebug.remote_connect_back=1" >> $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini \
+	&& echo "xdebug.max_nesting_level=512" >> $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini \
+	&& echo "xdebug.idekey=\"PHPSTORM\"" >> $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini \
+	&& echo "xdebug.remote_host=172.17.0.1" >> $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini \
 	&& sed -i -e "s#listen = \[::\]:9000#listen = /var/run/php-fpm.sock#" /usr/local/etc/php-fpm.d/zz-docker.conf \
 	&& deluser www-data \
 	&& delgroup cdrw \
@@ -75,7 +82,6 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && rm /tmp/s6-overlay-amd64.tar.gz
 	&& echo "listen.owner = www-data" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
 	&& echo "listen.group = www-data" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
 	&& echo "listen.mode = 0660" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
-	&& chmod +x /entrypoint.sh \
 	&& chmod +x /github-keys.sh \
 	&& sed -i -r 's/.?UseDNS\syes/UseDNS no/' /etc/ssh/sshd_config \
 	&& sed -i -r 's/.?PasswordAuthentication.+/PasswordAuthentication no/' /etc/ssh/sshd_config \
