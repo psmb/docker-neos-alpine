@@ -6,7 +6,8 @@
 
 The image does a few things:
 1. Automatically install and provision a Neos website, based on environment vars documented below
-2. Be ready to be used in production and serve as a rolling deployment target with this Ansible script https://github.com/psmb/ansible-deploy
+2. Pack a few useful things like XDEBUG integration, git, beard etc.
+3. Be ready to be used in production and serve as a rolling deployment target with this Ansible script https://github.com/psmb/ansible-deploy
 
 Check out [this shell script](https://github.com/psmb/docker-neos-alpine/blob/master/root/etc/cont-init.d/10-init-neos) to see what exactly this image can do for you.
 
@@ -30,6 +31,7 @@ This image supports following environment variable for automatically configuring
 
 
 In addition to these settings, if you place database sql dump at `Data/Persistent/db.sql`, it would automatically be imported on first container launch.
+If `beard.json` file is present, your distribution will get [bearded](https://github.com/mneuhaus/Beard).
 
 Example docker-compose.yml configuration:
 
