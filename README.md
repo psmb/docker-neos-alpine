@@ -2,7 +2,7 @@
 [![](https://images.microbadger.com/badges/version/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Get your own version badge on microbadger.com")
 [![](https://images.microbadger.com/badges/license/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Get your own license badge on microbadger.com")
 
-This image is based on Alpine linux with nginx + php-fpm 7.1 + s6 process manager, packing everything needed for development and production usage of Neos in under 70mb.
+[Neos CMS](https://neos.io) image based on **Alpine** linux with **nginx** + **php-fpm 7.1** + **s6** process manager, packing everything needed for development and production usage of Neos in under 70mb.
 
 The image does a few things:
 1. Automatically install and provision a Neos website, based on environment vars documented below
@@ -36,8 +36,8 @@ web:
     - '80'
   links:
     - db:db
-  volumes_from:
-    - webdata
+  volumes:
+    - /data
   environment:
     REPOSITORY_URL: 'https://github.com/neos/neos-development-distribution'
     SITE_PACKAGE: 'Neos.Demo'
@@ -45,16 +45,14 @@ web:
     ADMIN_PASSWORD: 'password'
     BASE_URI: 'https://demo.com/'
     IMPORT_GITHUB_PUB_KEYS: 'your-github-user-name'
+db:
+  image: mariadb/mariadb:latest
+  expose:
+    - 3306
+  volumes:
+    - /data
+  environment:
+    MARIADB_PASS: pass
 ```
 
-
-
-
-
-
-In addition, if you provide certain environment variables (documented below), it would also automatically provision the container with your website distribution, import the site package data or even automatically import persistent resources and database dump.
-
-This image is meant to run only one website per container. We don't use Docker for code deployments, so we use one image for all of our Neos websites, as all of them use the same stack and don't need any alterations. Having only one docker image saves disk space and simplifies container management.
-
-**WARNING: this image is created for our internal use, and is tightly coupled to our infrastructure. I would recommend to create your own image, taking inspiration from this one.**
-
+**WARNING: for now this image is hardcoded to look for mysql at host 'db' password 'pass', will make it customizable in the future**
