@@ -1,7 +1,7 @@
 #!/usr/bin/with-contenv /bin/bash
 set -ex
 
-DB_NAME=${DB_NAME:="db"}
+DB_DATABASE=${DB_DATABASE:="db"}
 DB_HOST=${DB_HOST:="db"}
 DB_USER=${DB_USER:="admin"}
 DB_PASS=${DB_PASS:="pass"}
@@ -41,7 +41,7 @@ else
 			sed -i -r "1,/baseUri:/s~baseUri: .+?~baseUri: '$BASE_URI'~g" $SETTINGS_TARGET_FILE
 			echo "Configuration file $SETTINGS_TARGET_FILE with baseUri set to $BASE_URI created."
 		fi
-		sed -i -r "1,/dbname:/s~dbname: .+?~dbname: '$DB_NAME'~g" $SETTINGS_TARGET_FILE
+		sed -i -r "1,/dbname:/s~dbname: .+?~dbname: '$DB_DATABASE'~g" $SETTINGS_TARGET_FILE
 		sed -i -r "1,/user:/s~user: .+?~user: '$DB_USER'~g" $SETTINGS_TARGET_FILE
 		sed -i -r "1,/password:/s~password: .+?~password: '$DB_PASS'~g" $SETTINGS_TARGET_FILE
 		sed -i -r "1,/host:/s~host: .+?~host: '$DB_HOST'~g" $SETTINGS_TARGET_FILE
@@ -68,10 +68,10 @@ else
 	###
 	# Create and import DB
 	###
-	echo "CREATE DATABASE IF NOT EXISTS $DB_NAME" | mysql -u $DB_USER -p$DB_PASS -h $DB_HOST
+	echo "CREATE DATABASE IF NOT EXISTS $DB_DATABASE" | mysql -u $DB_USER -p$DB_PASS -h $DB_HOST
 	if [ -f /data/shared/Data/Persistent/db.sql ]
 		then
-			mysql -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_NAME < /data/shared/Data/Persistent/db.sql
+			mysql -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_DATABASE < /data/shared/Data/Persistent/db.sql
 	fi
 
 

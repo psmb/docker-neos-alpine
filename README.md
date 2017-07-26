@@ -22,7 +22,7 @@ This image supports following environment variable for automatically configuring
 |BASE_URI|If set, set the `baseUri` option in Settings.yaml, optional|
 |XDEBUG_CONFIG|Pass xdebug config string, e.g. `idekey=PHPSTORM remote_enable=1`. If no config provided the Xdebug extension will be disabled (safe for production), off by default|
 |IMPORT_GITHUB_PUB_KEYS|Will pull authorized keys allowed to connect to this image from your Github account(s).|
-|DB_NAME|Database name, defaults to `db`|
+|DB_DATABASE|Database name, defaults to `db`|
 |DB_HOST|Database host, defaults to `db`|
 |DB_PASS|Database password, defaults to `pass`|
 |DB_USER|Database user, defaults to `admin`|
