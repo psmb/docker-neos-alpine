@@ -1,0 +1,60 @@
+[![](https://images.microbadger.com/badges/image/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Neos Alpine")
+[![](https://images.microbadger.com/badges/version/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/license/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Get your own license badge on microbadger.com")
+
+This image is based on Alpine linux with nginx + php-fpm 7.1 + s6 process manager, packing everything needed for development and production usage of Neos in under 70mb.
+
+The image does a few things:
+1. Automatically install and provision a Neos website, based on environment vars documented below
+2. Be ready to be used in production and serve as a rolling deployment target with this Ansible script https://github.com/psmb/ansible-deploy
+
+Check out [this shell script](https://github.com/psmb/docker-neos-alpine/blob/master/root/etc/cont-init.d/10-init-neos) to see what exactly this image can do for you.
+
+## Usage
+
+This image supports following environment variable for automatically configuring Neos at container startup:
+
+| Docker env variable | Description |
+|---------|-------------|
+|REPOSITORY_URL|Link to Neos website distribution|
+|VERSION|Git repository branch, commit SHA or release tag, defaults to `master`|
+|SITE_PACKAGE|Neos website package with exported website data to be imported, optional|
+|ADMIN_PASSWORD|If set, would create an `admin` user with such password, optional|
+|BASE_URI|If set, set the `baseUri` option in Settings.yaml, optional|
+|XDEBUG_CONFIG|Pass xdebug config string, e.g. `idekey=PHPSTORM remote_enable=1`. If no config provided the Xdebug extension will be disabled (safe for production), off by default|
+|IMPORT_GITHUB_PUB_KEYS|Will pull authorized keys allowed to connect to this image from your Github account(s).|
+
+In addition to these settings, if you place database sql dump at `Data/Persistent/db.sql`, it would automatically be imported on first container launch.
+
+Example docker-compose.yml configuration:
+
+```
+...
+web:
+  image: dimaip/docker-neos-alpine:latest
+  ports:
+    - '80'
+  links:
+    - db:db
+  volumes_from:
+    - webdata
+  environment:
+    REPOSITORY_URL: 'https://github.com/neos/neos-development-distribution'
+    SITE_PACKAGE: 'Neos.Demo'
+    VERSION: '2.0'
+    ADMIN_PASSWORD: 'password'
+    BASE_URI: 'https://demo.com/'
+    IMPORT_GITHUB_PUB_KEYS: 'your-github-user-name'
+```
+
+
+
+
+
+
+In addition, if you provide certain environment variables (documented below), it would also automatically provision the container with your website distribution, import the site package data or even automatically import persistent resources and database dump.
+
+This image is meant to run only one website per container. We don't use Docker for code deployments, so we use one image for all of our Neos websites, as all of them use the same stack and don't need any alterations. Having only one docker image saves disk space and simplifies container management.
+
+**WARNING: this image is created for our internal use, and is tightly coupled to our infrastructure. I would recommend to create your own image, taking inspiration from this one.**
+
