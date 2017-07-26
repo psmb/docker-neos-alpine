@@ -19,10 +19,14 @@ This image supports following environment variable for automatically configuring
 |REPOSITORY_URL|Link to Neos website distribution|
 |VERSION|Git repository branch, commit SHA or release tag, defaults to `master`|
 |SITE_PACKAGE|Neos website package with exported website data to be imported, optional|
-|ADMIN_PASSWORD|If set, would create an `admin` user with such password, optional|
+|ADMIN_PASSWORD|If set, would create a Neos `admin` user with such password, optional|
 |BASE_URI|If set, set the `baseUri` option in Settings.yaml, optional|
 |XDEBUG_CONFIG|Pass xdebug config string, e.g. `idekey=PHPSTORM remote_enable=1`. If no config provided the Xdebug extension will be disabled (safe for production), off by default|
 |IMPORT_GITHUB_PUB_KEYS|Will pull authorized keys allowed to connect to this image from your Github account(s).|
+|DB_HOST|Database host, defaults to `db`|
+|DB_PASS|Database password, defaults to `pass`|
+|DB_USER|Database user, defaults to `admin`|
+
 
 In addition to these settings, if you place database sql dump at `Data/Persistent/db.sql`, it would automatically be imported on first container launch.
 
@@ -54,5 +58,3 @@ db:
   environment:
     MARIADB_PASS: pass
 ```
-
-**WARNING: for now this image is hardcoded to look for mysql at host 'db' password 'pass', will make it customizable in the future**
