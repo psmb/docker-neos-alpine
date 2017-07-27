@@ -31,7 +31,7 @@ test:
     - while true; do if docker logs web 2>&1 | grep "ready to handle connections"; then break; else echo "Waiting for web container to finish provisioning..."  sleep 10; fi done
     # Test: do basic front-end tests
     - curl -L --head http://test.loc:8000 && curl -s -L http://test.loc:8000
-    - curl -s -L --head http://test.loc:8000 | grep "HTTP/1.1 200 OK" && curl -s -L --head http://test.loc:8000 | grep "X-Flow-Powered" && curl -s -L --head http://test.loc:8000 | grep "/flow/welcome"
+    - curl -s -L --head http://test.loc:8000 | grep "HTTP/1.1 200 OK" && curl -s -L --head http://test.loc:8000 | grep "X-Flow-Powered"
     - curl -s -L http://test.loc:8000 | grep "This website is powered by Neos"
     # Clean up
     - docker rm -f web || true
