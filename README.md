@@ -1,5 +1,7 @@
 # [dimaip/docker-neos-apline](https://hub.docker.com/r/dimaip/docker-neos-alpine/) &middot; [![](https://images.microbadger.com/badges/image/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Neos Alpine") [![](https://images.microbadger.com/badges/version/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/license/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Get your own license badge on microbadger.com")
 
+[**Image info**](https://microbadger.com/images/dimaip/docker-neos-alpine)
+
 Opinionated [Neos CMS](https://neos.io) docker image based on **Alpine** linux with **nginx** + **php-fpm 7.1** + **s6** process manager, packing everything needed for development and production usage of Neos in under 70mb.
 
 The image does a few things:

@@ -19,8 +19,8 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 LABEL org.label-schema.docker.dockerfile="/Dockerfile" \
 	org.label-schema.license="MIT" \
 	org.label-schema.name="Neos Alpine Docker Image" \
-	org.label-schema.url="https://github.com/psmb/docker-neos-bare" \
-	org.label-schema.vcs-url="https://github.com/psmb/docker-neos-bare" \
+	org.label-schema.url="https://github.com/psmb/docker-neos-alpine" \
+	org.label-schema.vcs-url="https://github.com/psmb/docker-neos-alpine" \
 	org.label-schema.vcs-type="Git"
 
 RUN set -x \
