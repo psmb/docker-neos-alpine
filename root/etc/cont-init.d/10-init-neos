@@ -108,10 +108,4 @@ else
 	chmod g+rwx -R /data/
 	# Needed to make ssh work
 	chmod 755 /data
-
-	if grep -q 'flowpack/elasticsearch-contentrepositoryadaptor' composer.json
-	  then
-	  	echo "Elasticsearch installed, start indexing"
-      FLOW_CONTEXT=Production ./flow nodeindex:build --workspace='live'
-  fi
 fi
