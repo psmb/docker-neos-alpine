@@ -30,7 +30,7 @@ test:
     - docker logs -f web > ${CIRCLE_ARTIFACTS}/web.log:
         background: true
     # Wait till container is fully configured
-    - while true; do if grep "ready to handle connections" ${CIRCLE_ARTIFACTS}/web.log; then break; else sleep 1; fi done
+    - while true; do if grep "ready to handle connections" ${CIRCLE_ARTIFACTS}/web.log; then break; else echo "Waiting for web container to finish provisioning..." && sleep 1; fi done
     # Test: do basic front-end tests
     - curl -L --head http://test.loc:8000 && curl -s -L http://test.loc:8000
     - curl -s -L --head http://test.loc:8000 | grep "HTTP/1.1 200 OK" && curl -s -L --head http://test.loc:8000 | grep "X-Flow-Powered" && curl -s -L --head http://test.loc:8000 | grep "/flow/welcome"
