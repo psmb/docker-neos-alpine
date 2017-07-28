@@ -26,7 +26,7 @@ test:
     # Default setup
     # ##################################################
     # Launch it
-    - docker run -d --name=web -p=8000:80 --link=db:db --env="REPOSITORY_URL='https://github.com/neos/neos-development-distribution'" --env="SITE_PACKAGE='Neos.Demo'" docker-neos-alpine-test
+    - docker run -d --name=web -p=8000:80 --link=db:db --env="REPOSITORY_URL=https://github.com/neos/neos-development-distribution" --env="SITE_PACKAGE=Neos.Demo" docker-neos-alpine-test
     # Wait till container is fully configured
     - while true; do if docker logs web 2>&1 | grep "ready to handle connections"; then break; else echo "Waiting for web container to finish provisioning..."  sleep 10; fi done
     # Test: do basic front-end tests
