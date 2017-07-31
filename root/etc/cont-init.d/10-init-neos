@@ -59,6 +59,7 @@ else
 
 	cp -RPp /data/transfer /data/releases/current
 	rm -rf /data/releases/current/Web/_Resources
+	mkdir -p /data/releases/current/Data
 	ln -s /data/shared/Data/Logs /data/releases/current/Data/Logs
 	ln -s /data/shared/Data/Persistent /data/releases/current/Data/Persistent
 	ln -s /data/shared/Configuration/Settings.yaml /data/releases/current/Configuration/Settings.yaml
