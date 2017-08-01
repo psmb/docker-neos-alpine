@@ -53,7 +53,7 @@ web:
     BASE_URI: 'https://demo.com/'
     IMPORT_GITHUB_PUB_KEYS: 'your-github-user-name'
 db:
-  image: mariadb/mariadb:latest
+  image: mariadb:latest
   expose:
     - 3306
   volumes:
