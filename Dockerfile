@@ -24,7 +24,7 @@ LABEL org.label-schema.docker.dockerfile="/Dockerfile" \
 
 RUN set -x \
 	&& apk update \
-	&& apk add tar curl sed bash yaml mysql-client git nginx libpng freetype libjpeg-turbo icu-dev openssh pwgen sudo s6 \
+	&& apk add tar curl sed bash yaml python mysql-client git nginx libpng freetype libjpeg-turbo icu-dev openssh pwgen sudo s6 \
 	&& apk add --virtual .phpize-deps $PHPIZE_DEPS libtool freetype-dev libpng-dev libjpeg-turbo-dev yaml-dev \
 	&& docker-php-ext-configure gd \
 		--with-gd \
