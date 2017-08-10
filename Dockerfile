@@ -88,7 +88,7 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && rm /tmp/s6-overlay-amd64.tar.gz
 	&& sed -i -r 's/.?ChallengeResponseAuthentication.+/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config \
 	&& sed -i -r 's/.?PermitRootLogin.+/PermitRootLogin no/' /etc/ssh/sshd_config \
 	&& sed -i '/secure_path/d' /etc/sudoers \
-	&& echo 'www  ALL=(ALL)  NOPASSWD: ALL' > /etc/sudoers.d/www
+	&& echo 'www-data ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/www
 
 # Expose ports
 EXPOSE 80 22
