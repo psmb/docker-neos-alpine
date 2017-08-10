@@ -11,6 +11,9 @@ set -e
 [ -d /data/.ssh ] || mkdir /data/.ssh
 [ -f /data/.ssh/authorized_keys ] || touch /data/.ssh/authorized_keys
 chown www-data:www-data -R /data/.ssh
+chmod go-w /data/
+chmod 700 /data/.ssh
+chmod 600 /data/.ssh/authorized_keys
 
 # Unlock 'www-data' account
 PASS=$(pwgen -c -n -1 16)
