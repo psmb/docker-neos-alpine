@@ -107,6 +107,14 @@ else
 	chown www-data:www-data -R /tmp/
 	chown www-data:www-data -R /data/
 	chmod g+rwx -R /data/
-	# Needed to make ssh work
-	chmod 755 /data
+	
+	# Set ssh permissions
+	if [ -z "/data/.ssh/authorized_keys" ]
+		then
+			chown www-data:www-data -R /data/.ssh
+			chmod go-w /data/
+			chmod 700 /data/.ssh
+			chmod 600 /data/.ssh/authorized_keys
+	fi
+
 fi
