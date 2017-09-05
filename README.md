@@ -59,5 +59,8 @@ db:
   volumes:
     - /data
   environment:
-    MARIADB_PASS: pass
+    MYSQL_DATABASE: 'db'
+    MYSQL_USER: 'admin'
+    MYSQL_PASSWORD: 'pass'
+    MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
 ```
