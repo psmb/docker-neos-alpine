@@ -52,10 +52,6 @@ web:
     ADMIN_PASSWORD: 'password'
     BASE_URI: 'https://demo.com/'
     IMPORT_GITHUB_PUB_KEYS: 'your-github-user-name'
-    DB_HOST: db
-    DB_DATABASE: 'neos-db'
-    DB_USER: 'neos-user'
-    DB_PASS: 'password'
 db:
   image: mariadb:latest
   expose:
@@ -63,8 +59,8 @@ db:
   volumes:
     - /data
   environment:
-    MYSQL_DATABASE: 'neos-db'
-    MYSQL_USER: 'neos-user'
-    MYSQL_PASSWORD: 'password'
+    MYSQL_DATABASE: 'db'
+    MYSQL_USER: 'admin'
+    MYSQL_PASSWORD: 'pass'
     MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
 ```
