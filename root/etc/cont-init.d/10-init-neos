@@ -6,6 +6,7 @@ DB_HOST=${DB_HOST:="db"}
 DB_USER=${DB_USER:="admin"}
 DB_PASS=${DB_PASS:="pass"}
 REPOSITORY_URL=${REPOSITORY_URL:=""}
+VERSION=${VERSION:="master"}
 BASE_URI=${BASE_URI:=${BASE_URI:=""}}
 
 # Provision conainer at first run
@@ -54,7 +55,7 @@ else
 	# Needed to serve as a deployment target
 	###
 	cd /data/transfer
-	git clone $REPOSITORY_URL .
+	git clone -b $VERSION $REPOSITORY_URL .
 	composer install
 
 	rsync -a /data/transfer/ /data/releases/current/
