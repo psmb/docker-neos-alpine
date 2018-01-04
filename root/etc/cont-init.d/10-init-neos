@@ -66,6 +66,15 @@ else
 	ln -s /data/shared/Configuration/Settings.yaml /data/releases/current/Configuration/Settings.yaml
 	ln -s /data/shared/Web/_Resources /data/releases/current/Web/_Resources
 
+	###
+	# Import DB from AWS
+	###
+	if [ -z "$AWS_RESOURCES_ARN"]
+		then
+			echo "AWS_RESOURCES_ARN not set"
+		else
+			aws s3 cp ${AWS_RESOURCES_ARN}db.sql /data/shared/Data/Persistent/db.sql
+	fi
 
 	###
 	# Create and import DB
