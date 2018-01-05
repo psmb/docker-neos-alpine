@@ -36,11 +36,11 @@ If `beard.json` file is present, your distribution will get [bearded](https://gi
 Example docker-compose.yml configuration:
 
 ```
-...
 web:
   image: dimaip/docker-neos-alpine:latest
   ports:
     - '80'
+    - '22'
   links:
     - db:db
   volumes:
@@ -48,7 +48,7 @@ web:
   environment:
     REPOSITORY_URL: 'https://github.com/neos/neos-development-distribution'
     SITE_PACKAGE: 'Neos.Demo'
-    VERSION: '2.0'
+    VERSION: '3.3'
     ADMIN_PASSWORD: 'password'
     BASE_URI: 'https://demo.com/'
     IMPORT_GITHUB_PUB_KEYS: 'your-github-user-name'
@@ -57,7 +57,7 @@ db:
   expose:
     - 3306
   volumes:
-    - /data
+    - /var/lib/data
   environment:
     MYSQL_DATABASE: 'db'
     MYSQL_USER: 'admin'
