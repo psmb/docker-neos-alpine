@@ -71,7 +71,7 @@ else
 	###
 	if [ -z "$AWS_RESOURCES_ARN"]
 		then
-			echo "AWS_RESOURCES_ARN not set"
+			echo "AWS_RESOURCES_ARN not set, skipping"
 		else
 			aws s3 cp ${AWS_RESOURCES_ARN}db.sql /data/shared/Data/Persistent/db.sql
 	fi
@@ -117,7 +117,7 @@ else
 	chown www-data:www-data -R /tmp/
 	chown www-data:www-data -R /data/
 	chmod g+rwx -R /data/
-	
+
 	# Set ssh permissions
 	if [ -z "/data/.ssh/authorized_keys" ]
 		then

@@ -22,6 +22,7 @@ This image supports following environment variable for automatically configuring
 |SITE_PACKAGE|Neos website package with exported website data to be imported, optional|
 |ADMIN_PASSWORD|If set, would create a Neos `admin` user with such password, optional|
 |BASE_URI|If set, set the `baseUri` option in Settings.yaml, optional|
+|AWS_RESOURCES_ARN|Automatically import the database from `${AWS_RESOURCES_ARN}db.sql` on the first container launch. Requires `AWS_ACCESS_KEY` and `AWS_SECRET_ACCESS_KEY` to be set in order to work.|
 |XDEBUG_CONFIG|Pass xdebug config string, e.g. `idekey=PHPSTORM remote_enable=1`. If no config provided the Xdebug extension will be disabled (safe for production), off by default|
 |IMPORT_GITHUB_PUB_KEYS|Will pull authorized keys allowed to connect to this image from your Github account(s).|
 |DB_DATABASE|Database name, defaults to `db`|
@@ -30,8 +31,10 @@ This image supports following environment variable for automatically configuring
 |DB_USER|Database user, defaults to `admin`|
 
 
-In addition to these settings, if you place database sql dump at `Data/Persistent/db.sql`, it would automatically be imported on first container launch.
+In addition to these settings, if you place database sql dump at `Data/Persistent/db.sql`, it would automatically be imported on the first container launch. See above for options to automatically download the data from AWS S3.
 If `beard.json` file is present, your distribution will get [bearded](https://github.com/mneuhaus/Beard).
+
+The container has the `crond` daemon running, put your scripts to `/etc/periodic` or `crontab -e`.
 
 Example docker-compose.yml configuration:
 
@@ -52,6 +55,7 @@ web:
     ADMIN_PASSWORD: 'password'
     BASE_URI: 'https://demo.com/'
     IMPORT_GITHUB_PUB_KEYS: 'your-github-user-name'
+    AWS_RESOURCES_ARN: 's3://some-bucket/sites/demo/'
 db:
   image: mariadb:latest
   expose:
@@ -64,3 +68,18 @@ db:
     MYSQL_PASSWORD: 'pass'
     MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
 ```
+
+## Utility scripts
+
+Also this container provides a couple of utility scripts, they are located in the `/data` folder.
+
+| Script name | Description |
+|---------|-------------|
+|backupDb.sh|Dumps database into `/data/shared/Data/Persistent/db.sql` and uploads it to AWS S3, if it is set up.|
+|syncDb.sh|Imports `/data/shared/Data/Persistent/db.sql`, and dowloads it from AWS S3 beforehand, if it is set up.|
+|syncCode.sh|For development purpose only! pulls latest code from git, does composer install and a few other things, see code.|
+|syncAll.sh|Runs both syncDb and syncCode|
+
+## Backups
+
+Each container automatically takes care of daily backing up itself by running the `/data/backupDb.sh` script, which dumps DB and optionally uploads it to AWS S3. So if you store persistent resources on AWS S3, you are good to go (you should probably additionally backup the contents of S3 to some offline storage, but that's a different story).
