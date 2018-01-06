@@ -1,2 +1,2 @@
-#!/usr/bin/env sh
-exec gosu root /usr/sbin/crond -fS
+#!/usr/bin/execlineb -P
+/usr/sbin/crond -fS
