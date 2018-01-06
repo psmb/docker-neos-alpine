@@ -1,14 +1,6 @@
 #!/usr/bin/with-contenv /bin/bash
 set -ex
 
-DB_DATABASE=${DB_DATABASE:="db"}
-DB_HOST=${DB_HOST:="db"}
-DB_USER=${DB_USER:="admin"}
-DB_PASS=${DB_PASS:="pass"}
-REPOSITORY_URL=${REPOSITORY_URL:=""}
-VERSION=${VERSION:="master"}
-BASE_URI=${BASE_URI:=${BASE_URI:=""}}
-
 # Provision conainer at first run
 if [ -f /data/releases/current/composer.json ] || [ -z "$REPOSITORY_URL" ]
 then
