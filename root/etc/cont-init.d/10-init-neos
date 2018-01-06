@@ -61,7 +61,7 @@ else
 	###
 	# Import DB from AWS
 	###
-	if [ -z "$AWS_RESOURCES_ARN"]
+	if [ -z "$AWS_RESOURCES_ARN" ]
 		then
 			echo "AWS_RESOURCES_ARN not set, skipping"
 		else
