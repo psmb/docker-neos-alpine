@@ -1,3 +1,2 @@
-#!/usr/bin/env bash
-
-exec crond
+#!/usr/bin/env sh
+exec gosu root /usr/sbin/crond -fS
