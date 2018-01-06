@@ -2,7 +2,7 @@
 set -ex
 
 mysqldump -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_DATABASE > /data/shared/Data/Persistent/db.sql
-if [ -z "$AWS_RESOURCES_ARN"]
+if [ -z "$AWS_RESOURCES_ARN" ]
   then
     echo "AWS_RESOURCES_ARN not set, skipping"
   else
