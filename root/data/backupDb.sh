@@ -2,9 +2,14 @@
 set -ex
 
 mysqldump -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_DATABASE > /data/shared/Data/Persistent/db.sql
-if [ -z "$AWS_RESOURCES_ARN" ]
+if [ -z "$AWS_BACKUP_ARN"]
   then
-    echo "AWS_RESOURCES_ARN not set, skipping"
+    echo "AWS_BACKUP_ARN not set, skipping"
   else
-    aws s3 cp /data/shared/Data/Persistent/db.sql ${AWS_RESOURCES_ARN}db.sql
+    if [ -z "$AWS_ENDPOINT" ]
+      then
+        aws s3 cp /data/shared/Data/Persistent/db.sql ${AWS_BACKUP_ARN}db.sql
+      else
+        aws s3 --endpoint-url=${AWS_ENDPOINT} cp /data/shared/Data/Persistent/db.sql ${AWS_BACKUP_ARN}db.sql
+    fi
 fi
