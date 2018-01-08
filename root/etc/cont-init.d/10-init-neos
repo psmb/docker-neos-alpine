@@ -61,11 +61,16 @@ else
 	###
 	# Import DB from AWS
 	###
-	if [ -z "$AWS_RESOURCES_ARN" ]
+	if [ -z "$AWS_BACKUP_ARN" ]
 		then
-			echo "AWS_RESOURCES_ARN not set, skipping"
+			echo "AWS_BACKUP_ARN not set, skipping"
 		else
-			aws s3 cp ${AWS_RESOURCES_ARN}db.sql /data/shared/Data/Persistent/db.sql
+			if [ -z "$AWS_ENDPOINT" ]
+				then
+					aws s3 cp ${AWS_BACKUP_ARN}db.sql /data/shared/Data/Persistent/db.sql
+				else
+					aws s3 --endpoint-url=$AWS_ENDPOINT cp ${AWS_BACKUP_ARN}db.sql /data/shared/Data/Persistent/db.sql
+			fi
 	fi
 
 	###
