@@ -99,6 +99,7 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && rm /tmp/s6-overlay-amd64.tar.gz
 	&& sed -i -r 's/.?PermitRootLogin.+/PermitRootLogin no/' /etc/ssh/sshd_config \
 	&& sed -i '/secure_path/d' /etc/sudoers \
 	&& echo 'www-data ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/www
+	&& if [ -z "$DB_AUTO_BACKUP" ]; then echo "No auto backups"; else ln -s /data/backupDb.sh /etc/periodic/${DB_AUTO_BACKUP}/; fi
 
 # Expose ports
 EXPOSE 80 22
