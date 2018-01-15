@@ -48,7 +48,7 @@ else
 	###
 	cd /data/transfer
 	git clone -b $VERSION $REPOSITORY_URL .
-	composer install
+	composer install --prefer-source
 
 	rsync -a /data/transfer/ /data/releases/current/
 	rm -rf /data/releases/current/Web/_Resources

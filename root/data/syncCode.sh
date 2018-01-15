@@ -9,7 +9,7 @@ git pull
 if [ -f /data/releases/current/beard.json ]
   then
     beard reset
-    composer install
+    composer install --prefer-source
     beard patch
   else
     composer install
