@@ -22,6 +22,7 @@ This image supports following environment variable for automatically configuring
 |SITE_PACKAGE|Neos website package with exported website data to be imported, optional|
 |ADMIN_PASSWORD|If set, would create a Neos `admin` user with such password, optional|
 |BASE_URI|If set, set the `baseUri` option in Settings.yaml, optional|
+|DONT_PUBLISH_PERSISTENT| Don't publish persistent assets on init. Needed e.g. for cloud resources.|
 |AWS_BACKUP_ARN|Automatically import the database from `${AWS_RESOURCES_ARN}db.sql` on the first container launch. Requires `AWS_ACCESS_KEY`, `AWS_SECRET_ACCESS_KEY` and `AWS_ENDPOINT` (optional, for S3-compatible storage) to be set in order to work.|
 |DB_AUTO_BACKUP|Automatically backup database at given interval, possible values: `15min`, `hourly`, `daily`, `weekly`, `monthly`. If `AWS_BACKUP_ARN` configured, would also upload the file at `${AWS_RESOURCES_ARN}db.sql` location. |
 |XDEBUG_CONFIG|Pass xdebug config string, e.g. `idekey=PHPSTORM remote_enable=1`. If no config provided the Xdebug extension will be disabled (safe for production), off by default|

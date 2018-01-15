@@ -12,7 +12,8 @@ if [ -f /data/releases/current/beard.json ]
     composer install --prefer-source
     beard patch
   else
-    composer install
+    composer install --prefer-source
 fi
 rm -rf Data/Temporary
 ./flow doctrine:migrate
+./flow resource:publish --collection static
