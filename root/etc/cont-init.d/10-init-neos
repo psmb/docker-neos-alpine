@@ -6,13 +6,17 @@ if [ -f /data/releases/current/composer.json ] || [ -z "$REPOSITORY_URL" ]
 then
 	echo "Do nothing, Neos distr is already there or REPOSITORY_URL env variable not set"
 else
-	mkdir -p /data/transfer
-	mkdir -p /data/releases
-	mkdir -p shared/Data/Logs
-	mkdir -p shared/Data/Persistent
-	mkdir -p shared/Configuration
-	mkdir -p shared/Web/_Resources
+    mkdir -p /data/transfer
+    mkdir -p /data/releases
+    mkdir -p /data/shared/Data/Logs
+    mkdir -p /data/shared/Data/Persistent
+    mkdir -p /data/shared/Configuration
+    mkdir -p /data/shared/Web/_Resources
 
+	###
+	# Initial provisioning
+	###
+	/provision-neos.sh
 
 	###
 	# Generate Settings.yaml
@@ -41,15 +45,6 @@ else
 		sed -i -r "1,/baseUri:/s~baseUri: .+?~baseUri: '$BASE_URI'~g" $SETTINGS_TARGET_FILE
 	fi
 
-
-	###
-	# Install into /data/transfer and link shared
-	# Needed to serve as a deployment target
-	###
-	cd /data/transfer
-	git clone -b $VERSION $REPOSITORY_URL .
-	composer install --prefer-source
-
 	rsync -a /data/transfer/ /data/releases/current/
 	rm -rf /data/releases/current/Web/_Resources
 	mkdir -p /data/releases/current/Data
@@ -57,6 +52,8 @@ else
 	ln -s /data/shared/Data/Persistent /data/releases/current/Data/Persistent
 	ln -s /data/shared/Configuration/Settings.yaml /data/releases/current/Configuration/Settings.yaml
 	ln -s /data/shared/Web/_Resources /data/releases/current/Web/_Resources
+
+	cd /data/releases/current
 
 	###
 	# Import DB from AWS
@@ -82,16 +79,7 @@ else
 			mysql -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_DATABASE < /data/shared/Data/Persistent/db.sql
 	fi
 
-
-	###
-	# Run final commands on the installed website
-	###
 	cd /data/releases/current
-
-	if [ -f /data/releases/current/beard.json ]
-		then
-			beard patch
-	fi
 
 	./flow doctrine:migrate
 
@@ -128,5 +116,4 @@ else
 			chmod 700 /data/.ssh
 			chmod 600 /data/.ssh/authorized_keys
 	fi
-
 fi

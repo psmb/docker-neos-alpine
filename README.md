@@ -85,3 +85,17 @@ Also this container provides a couple of utility scripts, they are located in th
 ## Backups
 
 Each container automatically takes care of daily backing up itself by running the `/data/backupDb.sh` script, which dumps DB and optionally uploads it to AWS S3. So if you store persistent resources on AWS S3, you are good to go (you should probably additionally backup the contents of S3 to some offline storage, but that's a different story).
+
+
+## Two-step provisioning
+
+You may build pre-provisioned images dedicated for your project from such Dockerfile:
+
+```
+FROM dimaip/docker-neos-alpine:latest
+ENV PHP_TIMEZONE=Europe/Moscow
+ENV REPOSITORY_URL=https://github.com/sfi-ru/ErmDistr
+RUN /provision-neos.sh
+```
+
+It will already pre-install your project by running `composer install`, so the remaining startup will take about 10s, instead of minutes.
