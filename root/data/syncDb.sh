@@ -9,10 +9,10 @@ then
 else
   if [ -z "$AWS_ENDPOINT" ]
     then
-      aws s3 cp ${AWS_BACKUP_ARN}db.sql /data/shared/Data/Persistent/db.sql
+      aws s3 cp ${AWS_BACKUP_ARN}db.sql /data/www/Data/Persistent/db.sql
     else
-      aws s3 --endpoint-url=$AWS_ENDPOINT cp ${AWS_BACKUP_ARN}db.sql /data/shared/Data/Persistent/db.sql
+      aws s3 --endpoint-url=$AWS_ENDPOINT cp ${AWS_BACKUP_ARN}db.sql /data/www/Data/Persistent/db.sql
   fi
-  mysql -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_DATABASE < /data/shared/Data/Persistent/db.sql
+  mysql -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_DATABASE < /data/www/Data/Persistent/db.sql
   echo "Downloaded DB dump from AWS and imported"
 fi

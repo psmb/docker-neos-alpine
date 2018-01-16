@@ -3,10 +3,10 @@ set -ex
 
 echo "This script should never be used in production! Use a proper deployment script instead!"
 
-cd /data/releases/current
+cd /data/www
 
 git pull
-if [ -f /data/releases/current/beard.json ]
+if [ -f /data/www/beard.json ]
   then
     beard reset
     composer install --prefer-source

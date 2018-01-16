@@ -1,5 +1,0 @@
-#!/usr/bin/execlineb -P
-
-# Create default directory structure
-mkdir -p /data/logs
-mkdir -p /data/tmp/nginx

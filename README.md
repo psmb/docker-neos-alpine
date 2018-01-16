@@ -7,7 +7,7 @@ Opinionated [Neos CMS](https://neos.io) docker image based on **Alpine** linux w
 The image does a few things:
 1. Automatically install and provision a Neos website, based on environment vars documented below
 2. Pack a few useful things like XDEBUG integration, git, beard etc.
-3. Be ready to be used in production and serve as a rolling deployment target with this Ansible script https://github.com/psmb/ansible-deploy
+3. ~~Be ready to be used in production and serve as a rolling deployment target with this Ansible script https://github.com/psmb/ansible-deploy~~ (I gave up on this deployment method, use 2.x version of this image if you need it, but rather consider full conatiner deployment)
 
 Check out [this shell script](https://github.com/psmb/docker-neos-alpine/blob/master/root/etc/cont-init.d/10-init-neos) to see what exactly this image can do for you.
 
@@ -21,7 +21,7 @@ This image supports following environment variable for automatically configuring
 |VERSION|Git repository branch, commit SHA or release tag, defaults to `master`|
 |SITE_PACKAGE|Neos website package with exported website data to be imported, optional|
 |ADMIN_PASSWORD|If set, would create a Neos `admin` user with such password, optional|
-|BASE_URI|If set, set the `baseUri` option in Settings.yaml, optional|
+|~~BASE_URI~~|2.x image only. If set, set the `baseUri` option in Settings.yaml, optional|
 |DONT_PUBLISH_PERSISTENT| Don't publish persistent assets on init. Needed e.g. for cloud resources.|
 |AWS_BACKUP_ARN|Automatically import the database from `${AWS_RESOURCES_ARN}db.sql` on the first container launch. Requires `AWS_ACCESS_KEY`, `AWS_SECRET_ACCESS_KEY` and `AWS_ENDPOINT` (optional, for S3-compatible storage) to be set in order to work.|
 |DB_AUTO_BACKUP|Automatically backup database at given interval, possible values: `15min`, `hourly`, `daily`, `weekly`, `monthly`. If `AWS_BACKUP_ARN` configured, would also upload the file at `${AWS_RESOURCES_ARN}db.sql` location. |
@@ -55,7 +55,6 @@ web:
     SITE_PACKAGE: 'Neos.Demo'
     VERSION: '3.3'
     ADMIN_PASSWORD: 'password'
-    BASE_URI: 'https://demo.com/'
     IMPORT_GITHUB_PUB_KEYS: 'your-github-user-name'
     AWS_RESOURCES_ARN: 's3://some-bucket/sites/demo/'
 db:
@@ -77,8 +76,8 @@ Also this container provides a couple of utility scripts, they are located in th
 
 | Script name | Description |
 |---------|-------------|
-|backupDb.sh|Dumps database into `/data/shared/Data/Persistent/db.sql` and uploads it to AWS S3, if it is set up.|
-|syncDb.sh|Imports `/data/shared/Data/Persistent/db.sql`, and dowloads it from AWS S3 beforehand, if it is set up.|
+|backupDb.sh|Dumps database into `/data/www/Data/Persistent/db.sql` and uploads it to AWS S3, if it is set up.|
+|syncDb.sh|Imports `/data/www/Data/Persistent/db.sql`, and dowloads it from AWS S3 beforehand, if it is set up.|
 |syncCode.sh|For development purpose only! pulls latest code from git, does composer install and a few other things, see code.|
 |syncAll.sh|Runs both syncDb and syncCode|
 

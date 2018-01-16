@@ -3,8 +3,8 @@ Neos:
     persistence:
       backendOptions:
         driver: pdo_mysql
-        dbname: DB_DATABASE
-        user: DB_USER
-        password: DB_PASS
-        host: DB_HOST
+        dbname: '%env:DB_DATABASE%'
+        user: '%env:DB_USER%'
+        password: '%env:DB_PASS%'
+        host: '%env:DB_HOST%'
         port: 3306

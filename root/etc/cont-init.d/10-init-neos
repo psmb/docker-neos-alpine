@@ -1,112 +1,69 @@
 #!/usr/bin/with-contenv /bin/bash
 set -ex
 
-# Provision conainer at first run
-if [ -f /data/releases/current/composer.json ] || [ -z "$REPOSITORY_URL" ]
-then
-	echo "Do nothing, Neos distr is already there or REPOSITORY_URL env variable not set"
-else
-	###
-	# Initial provisioning
-	###
-	/provision-neos.sh
 
-	###
-	# Generate Settings.yaml
-	###
-	SETTINGS_SOURCE_FILE="/Settings.yaml"
-	SETTINGS_WITH_BASE_URI_SOURCE_FILE="/SettingsWithBaseUri.yaml"
-	SETTINGS_TARGET_FILE="/data/shared/Configuration/Settings.yaml"
-	# Only proceed if file DOES NOT exist...
-	if [ -f $SETTINGS_TARGET_FILE ]
+###
+# Initial provisioning
+###
+/provision-neos.sh
+
+###
+# Check if DB already exists
+###
+set +e
+RESULT=`mysql -u $DB_USER -p$DB_PASS -h $DB_HOST -e "SHOW DATABASES LIKE '${DB_DATABASE}'" --batch --skip-column-names | wc -l`
+set -e
+if [ "$RESULT" == "1" ];
 	then
-		echo "Settings.yaml exists, no need to generate it"
-	else
-		mkdir -p $(dirname $SETTINGS_TARGET_FILE)
-		if [[ -z "$BASE_URI" ]]; then
-			cat $SETTINGS_SOURCE_FILE > $SETTINGS_TARGET_FILE
-			echo "Configuration file $SETTINGS_TARGET_FILE created."
-		else
-			cat $SETTINGS_WITH_BASE_URI_SOURCE_FILE > $SETTINGS_TARGET_FILE
-			sed -i -r "1,/baseUri:/s~baseUri: .+?~baseUri: '$BASE_URI'~g" $SETTINGS_TARGET_FILE
-			echo "Configuration file $SETTINGS_TARGET_FILE with baseUri set to $BASE_URI created."
+		echo "Database already exists, skipping DB import"
+    else
+		###
+		# Import DB dump from AWS
+		###
+		if [ -z "$AWS_BACKUP_ARN" ]
+			then
+				echo "AWS_BACKUP_ARN not set, skipping"
+			else
+				if [ -z "$AWS_ENDPOINT" ]
+					then
+						aws s3 cp ${AWS_BACKUP_ARN}db.sql /data/www/Data/Persistent/db.sql
+					else
+						aws s3 --endpoint-url=$AWS_ENDPOINT cp ${AWS_BACKUP_ARN}db.sql /data/www/Data/Persistent/db.sql
+				fi
 		fi
-		sed -i -r "1,/dbname:/s~dbname: .+?~dbname: '$DB_DATABASE'~g" $SETTINGS_TARGET_FILE
-		sed -i -r "1,/user:/s~user: .+?~user: '$DB_USER'~g" $SETTINGS_TARGET_FILE
-		sed -i -r "1,/password:/s~password: .+?~password: '$DB_PASS'~g" $SETTINGS_TARGET_FILE
-		sed -i -r "1,/host:/s~host: .+?~host: '$DB_HOST'~g" $SETTINGS_TARGET_FILE
-		sed -i -r "1,/baseUri:/s~baseUri: .+?~baseUri: '$BASE_URI'~g" $SETTINGS_TARGET_FILE
-	fi
 
-	rsync -a /data/transfer/ /data/releases/current/
-	rm -rf /data/releases/current/Web/_Resources
-	mkdir -p /data/releases/current/Data
-	ln -s /data/shared/Data/Logs /data/releases/current/Data/Logs
-	ln -s /data/shared/Data/Persistent /data/releases/current/Data/Persistent
-	ln -s /data/shared/Configuration/Settings.yaml /data/releases/current/Configuration/Settings.yaml
-	ln -s /data/shared/Web/_Resources /data/releases/current/Web/_Resources
+		###
+		# Create and import DB
+		###
+		echo "CREATE DATABASE IF NOT EXISTS $DB_DATABASE" | mysql -u $DB_USER -p$DB_PASS -h $DB_HOST
+		if [ -f /data/www/Data/Persistent/db.sql ]
+			then
+				mysql -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_DATABASE < /data/www/Data/Persistent/db.sql
+		fi
 
-	cd /data/releases/current
 
-	###
-	# Import DB from AWS
-	###
-	if [ -z "$AWS_BACKUP_ARN" ]
-		then
-			echo "AWS_BACKUP_ARN not set, skipping"
-		else
-			if [ -z "$AWS_ENDPOINT" ]
-				then
-					aws s3 cp ${AWS_BACKUP_ARN}db.sql /data/shared/Data/Persistent/db.sql
-				else
-					aws s3 --endpoint-url=$AWS_ENDPOINT cp ${AWS_BACKUP_ARN}db.sql /data/shared/Data/Persistent/db.sql
-			fi
-	fi
+		cd /data/www
 
-	###
-	# Create and import DB
-	###
-	echo "CREATE DATABASE IF NOT EXISTS $DB_DATABASE" | mysql -u $DB_USER -p$DB_PASS -h $DB_HOST
-	if [ -f /data/shared/Data/Persistent/db.sql ]
-		then
-			mysql -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_DATABASE < /data/shared/Data/Persistent/db.sql
-	fi
+		./flow doctrine:migrate
 
-	cd /data/releases/current
+		if [ -z "$SITE_PACKAGE" ]
+			then
+				echo "SITE_PACKAGE not set"
+			else
+				./flow site:import --package-key=$SITE_PACKAGE
+		fi
 
-	./flow doctrine:migrate
+		if [ -z "$ADMIN_PASSWORD" ]
+			then
+				echo "No ADMIN_PASSWORD set"
+			else
+				./flow user:create --roles='Administrator' --username='admin' --password=$ADMIN_PASSWORD --first-name='UpdateMe' --last-name='Now'
+		fi
 
-	if [ -z "$SITE_PACKAGE" ]
-		then
-			echo "SITE_PACKAGE not set"
-		else
-			./flow site:import --package-key=$SITE_PACKAGE
-	fi
-
-	if [ -z "$ADMIN_PASSWORD" ]
-		then
-			echo "No ADMIN_PASSWORD set"
-		else
-			./flow user:create --roles='Administrator' --username='admin' --password=$ADMIN_PASSWORD --first-name='UpdateMe' --last-name='Now'
-	fi
-
-	if [ -z "$DONT_PUBLISH_PERSISTENT" ]
-		then
-			./flow resource:publish
-		else
-			./flow resource:publish --collection static
-	fi
-
-	chown www-data:www-data -R /tmp/
-	chown www-data:www-data -R /data/
-	chmod g+rwx -R /data/
-
-	# Set ssh permissions
-	if [ -z "/data/.ssh/authorized_keys" ]
-		then
-			chown www-data:www-data -R /data/.ssh
-			chmod go-w /data/
-			chmod 700 /data/.ssh
-			chmod 600 /data/.ssh/authorized_keys
-	fi
+		if [ -z "$DONT_PUBLISH_PERSISTENT" ]
+			then
+				./flow resource:publish
+			else
+				./flow resource:publish --collection static
+		fi
 fi
