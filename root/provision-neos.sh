@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv /bin/bash
+#!/usr/bin/env bash
 set -ex
 
 # Provision conainer at first run
@@ -7,7 +7,14 @@ then
 	echo "Do nothing, initial provisioning done"
 else
     # Make sure to init xdebug, not to slow-down composer
-    /etc/cont-init.d/00-init-xdebug
+    /init-xdebug.sh
+
+    mkdir -p /data/transfer
+    mkdir -p /data/releases
+    mkdir -p /data/shared/Data/Logs
+    mkdir -p /data/shared/Data/Persistent
+    mkdir -p /data/shared/Configuration
+    mkdir -p /data/shared/Web/_Resources
 
     ###
     # Install into /data/transfer and link shared

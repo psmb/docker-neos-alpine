@@ -1,15 +1,15 @@
-FROM php:7.1-fpm-alpine
+FROM php:7.2-fpm-alpine3.7
 
 MAINTAINER Dmitri Pisarev <dimaip@gmail.com>
 
-ARG PHP_REDIS_VERSION="3.1.1"
-ARG PHP_YAML_VERSION="2.0.0"
-ARG PHP_XDEBUG_VERSION="2.5.5"
-ARG S6_VERSION="1.19.1.1"
+ARG PHP_REDIS_VERSION="3.1.6"
+ARG PHP_YAML_VERSION="2.0.2"
+ARG PHP_XDEBUG_VERSION="2.6.0beta1"
+ARG S6_VERSION="1.21.2.2"
 
 ENV FLOW_REWRITEURLS 1
 
-ENV COMPOSER_VERSION 1.2.2
+ENV COMPOSER_VERSION 1.6.2
 ENV COMPOSER_HOME /composer
 ENV PATH /composer/vendor/bin:$PATH
 ENV COMPOSER_ALLOW_SUPERUSER 1
@@ -31,7 +31,7 @@ LABEL org.label-schema.docker.dockerfile="/Dockerfile" \
 
 RUN set -x \
 	&& apk update \
-	&& apk add tar rsync curl sed bash yaml python py-pip py-setuptools groff less mysql-client git nginx libpng freetype libjpeg-turbo-utils icu-dev openssh pwgen sudo s6 \
+	&& apk add tar rsync curl sed bash yaml python py-pip py-setuptools groff less mysql-client git nginx optipng freetype libjpeg-turbo-utils icu-dev openssh pwgen sudo s6 \
 	&& pip install awscli \
 	&& apk del py-pip py-setuptools \
 	&& apk add --virtual .phpize-deps $PHPIZE_DEPS libtool freetype-dev libpng-dev libjpeg-turbo-dev yaml-dev \

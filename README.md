@@ -2,7 +2,7 @@
 
 [**Image info**](https://microbadger.com/images/dimaip/docker-neos-alpine)
 
-Opinionated [Neos CMS](https://neos.io) docker image based on **Alpine** linux with **nginx** + **php-fpm 7.1** + **s6** process manager, packing everything needed for development and production usage of Neos in under 100mb.
+Opinionated [Neos CMS](https://neos.io) docker image based on **Alpine** linux with **nginx** + **php-fpm 7.2** + **s6** process manager, packing everything needed for development and production usage of Neos in under 100mb.
 
 The image does a few things:
 1. Automatically install and provision a Neos website, based on environment vars documented below

@@ -6,13 +6,6 @@ if [ -f /data/releases/current/composer.json ] || [ -z "$REPOSITORY_URL" ]
 then
 	echo "Do nothing, Neos distr is already there or REPOSITORY_URL env variable not set"
 else
-    mkdir -p /data/transfer
-    mkdir -p /data/releases
-    mkdir -p /data/shared/Data/Logs
-    mkdir -p /data/shared/Data/Persistent
-    mkdir -p /data/shared/Configuration
-    mkdir -p /data/shared/Web/_Resources
-
 	###
 	# Initial provisioning
 	###
