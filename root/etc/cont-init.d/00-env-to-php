@@ -7,6 +7,6 @@ set -e
 sed -i '/#AUTO_ENV_START/,/#AUTO_ENV_END/d' /etc/nginx/fastcgi_params
 echo "#AUTO_ENV_START" >> /etc/nginx/fastcgi_params
 while IFS='=' read -r name value; do
-        echo "fastcgi_param $name $value;" >> /etc/nginx/fastcgi_params
+        echo "fastcgi_param $name '$value';" >> /etc/nginx/fastcgi_params
 done < <(env)
 echo "#AUTO_ENV_END" >> /etc/nginx/fastcgi_params
