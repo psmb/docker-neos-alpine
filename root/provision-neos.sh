@@ -31,7 +31,7 @@ else
     # Copy DB connection settings
     ###
     mkdir -p /data/www/Configuration
-    cp /Settings.yaml /data/www/Configuration/
+    cp -n /Settings.yaml /data/www/Configuration/
 
     # Set permissions
     chown www-data:www-data -R /tmp/
