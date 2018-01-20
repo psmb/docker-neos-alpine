@@ -82,12 +82,12 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && rm /tmp/s6-overlay-amd64.tar.gz
 	&& echo "xdebug.max_nesting_level=512" >> $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini \
 	&& echo "xdebug.idekey=\"PHPSTORM\"" >> $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini \
 	&& echo "xdebug.remote_host=172.17.0.1" >> $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini \
-	&& sed -i -e "s#listen = \[::\]:9000#listen = /var/run/php-fpm.sock#" /usr/local/etc/php-fpm.d/zz-docker.conf \
 	&& deluser www-data \
 	&& delgroup cdrw \
 	&& addgroup -g 80 www-data \
 	&& adduser -u 80 -G www-data -s /bin/bash -D www-data -h /data \
 	&& rm -Rf /home/www-data \
+	&& sed -i -e "s#listen = 9000#listen = /var/run/php-fpm.sock#" /usr/local/etc/php-fpm.d/zz-docker.conf \
 	&& echo "clear_env = no" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
 	&& echo "listen.owner = www-data" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
 	&& echo "listen.group = www-data" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
