@@ -1,6 +1,10 @@
 #!/usr/bin/with-contenv /bin/bash
 set -ex
 
+# Layout default directory structure
+mkdir -p /data/www
+mkdir -p /data/logs
+mkdir -p /data/tmp/nginx
 
 ###
 # Initial provisioning
