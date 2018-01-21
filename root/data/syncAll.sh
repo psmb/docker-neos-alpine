@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
+#!/usr/bin/with-contenv bash
 /data/syncDb.sh
 /data/syncCode.sh
