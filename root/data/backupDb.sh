@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/with-contenv bash
 set -ex
 
 mysqldump -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_DATABASE > /data/www/Data/Persistent/db.sql
