@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/with-contenv bash
 set -ex
 
 echo "This script should never be used in production! Use a proper deployment script instead!"
