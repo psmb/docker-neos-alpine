@@ -12,15 +12,15 @@ mkdir -p /data/tmp/nginx
 /provision-neos.sh
 
 ###
-# Check if DB already exists
+# Check if DB already exists and is not empty
 ###
 set +e
-RESULT=`mysql -u $DB_USER -p$DB_PASS -h $DB_HOST -e "SHOW DATABASES LIKE '${DB_DATABASE}'" --batch --skip-column-names | wc -l`
+RESULT=`mysql -u $DB_USER -p$DB_PASS -h $DB_HOST -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema ='${DB_DATABASE}'" --batch --skip-column-names`
 set -e
-if [ "$RESULT" == "1" ];
+if [[ $RESULT -gt 0 ]];
 	then
 		echo "Database already exists, skipping DB import"
-    else
+	else
 		###
 		# Import DB dump from AWS
 		###
