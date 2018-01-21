@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/with-contenv bash
 set -ex
 
 echo "This script will overwrite the DB with the one from backups! Use with care!"
