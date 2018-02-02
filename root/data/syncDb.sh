@@ -3,7 +3,7 @@ set -ex
 
 echo "This script will overwrite the DB with the one from backups! Use with care!"
 
-if [ -z "$AWS_BACKUP_ARN"]
+if [ -z "$AWS_BACKUP_ARN" ]
 then
   echo "AWS_BACKUP_ARN not set"
 else
