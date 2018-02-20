@@ -65,7 +65,8 @@ if [[ $RESULT -gt 0 ]];
 		fi
 
 		if [ -z "$DONT_PUBLISH_PERSISTENT" ]
-			./flow resource:publish
+			then
+				./flow resource:publish
 		fi
 fi
 
