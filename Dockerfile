@@ -61,7 +61,6 @@ RUN set -x \
 	&& chmod +x /usr/local/bin/beard \
 	&& git config --global user.email "server@server.com" \
 	&& git config --global user.name "Server" \
-	&& /init-php-conf.sh \
 	&& rm -rf /var/cache/apk/*
 
 # Copy configuration
@@ -93,7 +92,8 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && rm /tmp/s6-overlay-amd64.tar.gz
 	&& sed -i -r 's/.?ChallengeResponseAuthentication.+/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config \
 	&& sed -i -r 's/.?PermitRootLogin.+/PermitRootLogin no/' /etc/ssh/sshd_config \
 	&& sed -i '/secure_path/d' /etc/sudoers \
-	&& echo 'www-data ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/www
+	&& echo 'www-data ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/www \
+	&& /bin/bash -c "source /init-php-conf.sh"
 
 # Expose ports
 EXPOSE 80 22

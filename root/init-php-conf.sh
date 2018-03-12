@@ -9,8 +9,8 @@ echo "post_max_size=${PHP_UPLOAD_MAX_FILESIZE:-512M}" > $PHP_INI_DIR/conf.d/post
 echo "allow_url_include=${PHP_ALLOW_URL_INCLUDE:-1}" > $PHP_INI_DIR/conf.d/allow_url_include.ini \
 echo "max_execution_time=${PHP_MAX_EXECUTION_TIME:-240}" > $PHP_INI_DIR/conf.d/max_execution_time.ini \
 echo "max_input_vars=${PHP_MAX_INPUT_VARS:-1500}" > $PHP_INI_DIR/conf.d/max_input_vars.ini \
-apk update
-apk add tzdata
+rm -rf /var/cache/apk/*
+apk update && apk add tzdata
 cp /usr/share/zoneinfo/${PHP_TIMEZONE:-UTC} /etc/localtime
 apk del tzdata
 rm -rf /var/cache/apk/*
