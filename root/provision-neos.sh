@@ -2,7 +2,7 @@
 set -ex
 
 # Provision conainer at first run
-if [ -f /data/www/composer.json ] || [ -z "$REPOSITORY_URL" ]
+if [ -f /data/www/composer.json ] || [ -f /data/www-provisioned/composer.json ] || [ -z "$REPOSITORY_URL" ]
 then
 	echo "Do nothing, initial provisioning done"
 else
@@ -10,6 +10,7 @@ else
     /init-xdebug.sh
 
     # Layout default directory structure
+    mkdir -p /data/www-provisioned
     mkdir -p /data/www
     mkdir -p /data/logs
     mkdir -p /data/tmp/nginx
@@ -17,12 +18,12 @@ else
     ###
     # Install into /data/www
     ###
-    cd /data/www
+    cd /data/www-provisioned
     git clone -b $VERSION $REPOSITORY_URL .
     composer install --prefer-source
 
     # Apply beard patches
-    if [ -f /data/www/beard.json ]
+    if [ -f /data/www-provisioned/beard.json ]
         then
             beard patch
     fi
@@ -30,8 +31,8 @@ else
     ###
     # Copy DB connection settings
     ###
-    mkdir -p /data/www/Configuration
-    cp /Settings.yaml /data/www/Configuration/
+    mkdir -p /data/www-provisioned/Configuration
+    cp /Settings.yaml /data/www-provisioned/Configuration/
 
     # Set permissions
     chown www-data:www-data -R /tmp/

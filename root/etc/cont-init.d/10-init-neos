@@ -11,6 +11,19 @@ mkdir -p /data/tmp/nginx
 ###
 /provision-neos.sh
 
+# On first launch unpack provisioned files into /data/www
+if [ -f /data/www/composer.json ] || [ -z "$REPOSITORY_URL" ]
+then
+	echo "Do nothing, provisioned files were already moved"
+else
+	# Move files our from /data/www/, in case there's already something partially mounted (e.g. a locally mounted package folder)
+	rsync -a /data/www/ /data/www-provisioned/
+	# Clear out target (otherwise mv wouldn't work)
+	rm -rf /data/www/*
+	# Finally move the provisioned files
+	mv /data/www-provisioned/* /data/www/
+done
+
 ###
 # Check if DB already exists and is not empty
 ###
