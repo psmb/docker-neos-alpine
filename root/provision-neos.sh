@@ -11,7 +11,6 @@ else
 
     # Layout default directory structure
     mkdir -p /data/www-provisioned
-    mkdir -p /data/www
     mkdir -p /data/logs
     mkdir -p /data/tmp/nginx
 

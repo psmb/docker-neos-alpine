@@ -1,8 +1,7 @@
 #!/usr/bin/with-contenv /bin/bash
 set -ex
 
-# Layout default directory structure
-mkdir -p /data/www
+# Layout default directory structure\
 mkdir -p /data/logs
 mkdir -p /data/tmp/nginx
 
@@ -16,13 +15,15 @@ if [ -f /data/www/composer.json ] || [ -z "$REPOSITORY_URL" ]
 then
 	echo "Do nothing, provisioned files were already moved"
 else
-	# Move files our from /data/www/, in case there's already something partially mounted (e.g. a locally mounted package folder)
-	rsync -a /data/www/ /data/www-provisioned/
-	# Clear out target (otherwise mv wouldn't work)
-	rm -rf /data/www/*
-	# Finally move the provisioned files
-	mv /data/www-provisioned/* /data/www/
-done
+	if [ -d /data/www/ ]
+	then
+		echo "/data/www/ has probably been locally mounted. Moving provisioned files into it."
+		# Move files our from /data/www/, in case there's already something partially mounted (e.g. a locally mounted package folder)
+		rsync -a /data/www-provisioned/ /data/www/
+	else
+		echo "Symlink /data/www/ to provisioned files"
+		ln -s /data/www-provisioned/ /data/www/
+fi
 
 ###
 # Check if DB already exists and is not empty
