@@ -23,6 +23,7 @@ else
 	else
 		echo "Symlink /data/www/ to provisioned files"
 		ln -s /data/www-provisioned/ /data/www/
+	fi
 fi
 
 ###
