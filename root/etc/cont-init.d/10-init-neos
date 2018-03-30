@@ -89,5 +89,5 @@ if [ "$(ls -A /data/www/Web/_Resources/Static/)" ]
 	then
 		echo "No need to publish static resources"
 	else
-		cd /data/www/flow resource:publish --collection static
+		/data/www/flow resource:publish --collection static
 fi
