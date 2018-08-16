@@ -5,6 +5,8 @@ echo "This script should never be used in production! Use a proper deployment sc
 
 cd /data/www
 
+rm -rf Packages/Inactive
+rm composer.lock
 git pull
 if [ -f /data/www/beard.json ]
   then
