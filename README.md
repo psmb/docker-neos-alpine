@@ -7,7 +7,7 @@ Opinionated [Neos CMS](https://neos.io) docker image based on **Alpine** linux w
 The image does a few things:
 1. Automatically install and provision a Neos website, based on environment vars documented below
 2. Pack a few useful things like XDEBUG integration, git, beard etc.
-3. ~~Be ready to be used in production and serve as a rolling deployment target with this Ansible script https://github.com/psmb/ansible-deploy~~ (I gave up on this deployment method, use 2.x version of this image if you need it, but rather consider full conatiner deployment)
+3. ~~Be ready to be used in production and serve as a rolling deployment target with this Ansible script https://github.com/psmb/ansible-deploy~~ (I gave up on this deployment method, use 2.x version of this image if you need it, but rather consider full container deployment)
 
 Check out [this shell script](https://github.com/psmb/docker-neos-alpine/blob/master/root/etc/cont-init.d/10-init-neos) to see what exactly this image can do for you.
 
