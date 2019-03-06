@@ -12,19 +12,19 @@ remaining_rate_limit=$(echo "$api_response" | grep -o -E "X-RateLimit-Remaining:
 keys=$(echo $api_response | grep -o -E 'ssh-\w+\s+[^\"]+')
 
 if [ $remaining_rate_limit -eq 0 ]; then
-  echo "WARNING: Github API rate limit exceeded. No key(s) added to `whoami` account."
+	echo "WARNING: Github API rate limit exceeded. No key(s) added to `whoami` account."
 else
-  if [ -z "$keys" ]; then
-    echo "WARNING: GitHub doesn't have any keys for '$user' user."
-  else
-    echo "Importing $user's GitHub pub key(s) to `whoami` account..."
+	if [ -z "$keys" ]; then
+		echo "WARNING: GitHub doesn't have any keys for '$user' user."
+	else
+		echo "Importing $user's GitHub pub key(s) to `whoami` account..."
 
-    [ -d ~/.ssh ] || mkdir ~/.ssh
-    [ -f ~/.ssh/authorized_keys ] || touch ~/.ssh/authorized_keys
+		[ -d ~/.ssh ] || mkdir ~/.ssh
+		[ -f ~/.ssh/authorized_keys ] || touch ~/.ssh/authorized_keys
 
-    for key in $keys; do
-      echo "Imported GitHub $user key: $key"
-      grep -q "$key" ~/.ssh/authorized_keys || echo "$key ${user}@github" >> ~/.ssh/authorized_keys
-    done
-  fi
+		for key in $keys; do
+			echo "Imported GitHub $user key: $key"
+			grep -q "$key" ~/.ssh/authorized_keys || echo "$key ${user}@github" >> ~/.ssh/authorized_keys
+		done
+	fi
 fi

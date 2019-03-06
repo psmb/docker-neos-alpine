@@ -2,8 +2,8 @@
 set -ex
 
 if [ -z "$DB_AUTO_BACKUP" ];
-  then
-    echo "No auto backups"
-  else
-    ln -s /data/backupDb.sh /etc/periodic/${DB_AUTO_BACKUP}/backupDb
+	then
+		echo "No auto backups"
+	else
+		ln -s /data/backupDb.sh /etc/periodic/${DB_AUTO_BACKUP}/backupDb
 fi

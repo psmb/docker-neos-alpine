@@ -6,35 +6,35 @@ if [ -f /data/www/composer.json ] || [ -f /data/www-provisioned/composer.json ] 
 then
 	echo "Do nothing, initial provisioning done"
 else
-    # Make sure to init xdebug, not to slow-down composer
-    /init-xdebug.sh
+	# Make sure to init xdebug, not to slow-down composer
+	/init-xdebug.sh
 
-    # Layout default directory structure
-    mkdir -p /data/www-provisioned
-    mkdir -p /data/logs
-    mkdir -p /data/tmp/nginx
+	# Layout default directory structure
+	mkdir -p /data/www-provisioned
+	mkdir -p /data/logs
+	mkdir -p /data/tmp/nginx
 
-    ###
-    # Install into /data/www
-    ###
-    cd /data/www-provisioned
-    git clone -b $VERSION $REPOSITORY_URL .
-    composer install --prefer-source
+	###
+	# Install into /data/www
+	###
+	cd /data/www-provisioned
+	git clone -b $VERSION $REPOSITORY_URL .
+	composer install --prefer-source
 
-    # Apply beard patches
-    if [ -f /data/www-provisioned/beard.json ]
-        then
-            beard patch
-    fi
+	# Apply beard patches
+	if [ -f /data/www-provisioned/beard.json ]
+		then
+			beard patch
+	fi
 
-    ###
-    # Copy DB connection settings
-    ###
-    mkdir -p /data/www-provisioned/Configuration
-    cp /Settings.yaml /data/www-provisioned/Configuration/
+	###
+	# Copy DB connection settings
+	###
+	mkdir -p /data/www-provisioned/Configuration
+	cp /Settings.yaml /data/www-provisioned/Configuration/
 
-    # Set permissions
-    chown www-data:www-data -R /tmp/
+	# Set permissions
+	chown www-data:www-data -R /tmp/
 	chown www-data:www-data -R /data/
 	chmod g+rwx -R /data/
 
