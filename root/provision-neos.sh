@@ -19,7 +19,7 @@ else
 	###
 	cd /data/www-provisioned
 	git clone -b $VERSION $REPOSITORY_URL .
-	composer install --prefer-source
+	composer install --prefer-source && rm -rf /composer/cache
 
 	# Apply beard patches
 	if [ -f /data/www-provisioned/beard.json ]
