@@ -1,4 +1,4 @@
-# [dimaip/docker-neos-apline](https://hub.docker.com/r/dimaip/docker-neos-alpine/) &middot; [![](https://images.microbadger.com/badges/image/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Neos Alpine") [![](https://images.microbadger.com/badges/version/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Neos Alpine") [![](https://circleci.com/gh/psmb/docker-neos-alpine.svg?style=shield)](https://circleci.com/gh/psmb/docker-neos-alpine/)
+# [dimaip/docker-neos-alpine](https://hub.docker.com/r/dimaip/docker-neos-alpine/) &middot; [![](https://images.microbadger.com/badges/image/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Neos Alpine") [![](https://images.microbadger.com/badges/version/dimaip/docker-neos-alpine.svg)](https://microbadger.com/images/dimaip/docker-neos-alpine "Neos Alpine") [![](https://circleci.com/gh/psmb/docker-neos-alpine.svg?style=shield)](https://circleci.com/gh/psmb/docker-neos-alpine/)
 
 [**Image info**](https://microbadger.com/images/dimaip/docker-neos-alpine)
 
