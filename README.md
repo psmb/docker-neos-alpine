@@ -19,8 +19,9 @@ This image supports following environment variable for automatically configuring
 |---------|-------------|
 |REPOSITORY_URL|Link to Neos website distribution|
 |VERSION|Git repository branch, commit SHA or release tag, defaults to `master`|
-|SITE_PACKAGE|Neos website package with exported website data to be imported, optional|
-|ADMIN_PASSWORD|If set, would create a Neos `admin` user with such password, optional|
+|DEVELOPMENT|Enables unsafe operations like auto DB import|
+|SITE_PACKAGE|Neos website package with exported website data to be imported, optional. Works only together with `DEVELOPMENT`|
+|ADMIN_PASSWORD|If set, would create a Neos `admin` user with such password, optional. Works only together with `DEVELOPMENT`|
 |~~BASE_URI~~|2.x image only. If set, set the `baseUri` option in Settings.yaml, optional|
 |DONT_PUBLISH_PERSISTENT| Don't publish persistent assets on init. Needed e.g. for cloud resources.|
 |AWS_BACKUP_ARN|Automatically import the database from `${AWS_RESOURCES_ARN}db.sql` on the first container launch. Requires `AWS_ACCESS_KEY`, `AWS_SECRET_ACCESS_KEY` and `AWS_ENDPOINT` (optional, for S3-compatible storage) to be set in order to work.|
@@ -33,7 +34,7 @@ This image supports following environment variable for automatically configuring
 |DB_USER|Database user, defaults to `admin`|
 
 
-In addition to these settings, if you place database sql dump at `Data/Persistent/db.sql`, it would automatically be imported on the first container launch. See above for options to automatically download the data from AWS S3.
+In addition to these settings, if you have `DEVELOPMENT` option enabled and if you place database sql dump at `Data/Persistent/db.sql`, it would automatically be imported on the first container launch. See above for options to automatically download the data from AWS S3.
 If `beard.json` file is present, your distribution will get [bearded](https://github.com/mneuhaus/Beard).
 
 The container has the `crond` daemon running, put your scripts to `/etc/periodic` or `crontab -e`.

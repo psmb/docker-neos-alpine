@@ -26,63 +26,68 @@ else
 	fi
 fi
 
-###
-# Check if DB already exists and is not empty
-###
-set +e
-RESULT=`mysql -u $DB_USER -p$DB_PASS -h $DB_HOST -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema ='${DB_DATABASE}'" --batch --skip-column-names`
-set -e
-if [[ $RESULT -gt 0 ]];
-	then
-		echo "Database already exists, skipping DB import"
-	else
-		###
-		# Import DB dump from AWS
-		###
-		if [ -z "$AWS_BACKUP_ARN" ]
-			then
-				echo "AWS_BACKUP_ARN not set, skipping"
-			else
-				if [ -z "$AWS_ENDPOINT" ]
-					then
-						aws s3 cp ${AWS_BACKUP_ARN}db.sql /data/www/Data/Persistent/db.sql
-					else
-						aws s3 --endpoint-url=$AWS_ENDPOINT cp ${AWS_BACKUP_ARN}db.sql /data/www/Data/Persistent/db.sql
-				fi
-		fi
+if [ -z "$DEVELOPMENT" ]
+then
+	echo "Production mode on, no destructive provisioning allowed"
+else
+	###
+	# Check if DB already exists and is not empty
+	###
+	set +e
+	RESULT=`mysql -u $DB_USER -p$DB_PASS -h $DB_HOST -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema ='${DB_DATABASE}'" --batch --skip-column-names`
+	set -e
+	if [[ $RESULT -gt 0 ]];
+		then
+			echo "Database already exists, skipping DB import"
+		else
+			###
+			# Import DB dump from AWS
+			###
+			if [ -z "$AWS_BACKUP_ARN" ]
+				then
+					echo "AWS_BACKUP_ARN not set, skipping"
+				else
+					if [ -z "$AWS_ENDPOINT" ]
+						then
+							aws s3 cp ${AWS_BACKUP_ARN}db.sql /data/www/Data/Persistent/db.sql
+						else
+							aws s3 --endpoint-url=$AWS_ENDPOINT cp ${AWS_BACKUP_ARN}db.sql /data/www/Data/Persistent/db.sql
+					fi
+			fi
 
-		###
-		# Create and import DB
-		###
-		echo "CREATE DATABASE IF NOT EXISTS $DB_DATABASE" | mysql -u $DB_USER -p$DB_PASS -h $DB_HOST
-		if [ -f /data/www/Data/Persistent/db.sql ]
-			then
-				mysql -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_DATABASE < /data/www/Data/Persistent/db.sql
-		fi
+			###
+			# Create and import DB
+			###
+			echo "CREATE DATABASE IF NOT EXISTS $DB_DATABASE" | mysql -u $DB_USER -p$DB_PASS -h $DB_HOST
+			if [ -f /data/www/Data/Persistent/db.sql ]
+				then
+					mysql -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_DATABASE < /data/www/Data/Persistent/db.sql
+			fi
 
 
-		cd /data/www
+			cd /data/www
 
-		sudo -u www-data /data/www/flow doctrine:migrate
+			sudo -u www-data /data/www/flow doctrine:migrate
 
-		if [ -z "$SITE_PACKAGE" ]
-			then
-				echo "SITE_PACKAGE not set"
-			else
-				sudo -u www-data /data/www/flow site:import --package-key=$SITE_PACKAGE
-		fi
+			if [ -z "$SITE_PACKAGE" ]
+				then
+					echo "SITE_PACKAGE not set"
+				else
+					sudo -u www-data /data/www/flow site:import --package-key=$SITE_PACKAGE
+			fi
 
-		if [ -z "$ADMIN_PASSWORD" ]
-			then
-				echo "No ADMIN_PASSWORD set"
-			else
-				sudo -u www-data /data/www/flow user:create --roles='Administrator' --username='admin' --password=$ADMIN_PASSWORD --first-name='UpdateMe' --last-name='Now'
-		fi
+			if [ -z "$ADMIN_PASSWORD" ]
+				then
+					echo "No ADMIN_PASSWORD set"
+				else
+					sudo -u www-data /data/www/flow user:create --roles='Administrator' --username='admin' --password=$ADMIN_PASSWORD --first-name='UpdateMe' --last-name='Now'
+			fi
 
-		if [ -z "$DONT_PUBLISH_PERSISTENT" ]
-			then
-				sudo -u www-data /data/www/flow resource:publish
-		fi
+			if [ -z "$DONT_PUBLISH_PERSISTENT" ]
+				then
+					sudo -u www-data /data/www/flow resource:publish
+			fi
+	fi
 fi
 
 if [ "$(ls -A /data/www/Web/_Resources/Static/)" ]
