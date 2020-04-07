@@ -2,9 +2,9 @@ FROM php:7.4-fpm-alpine3.11
 
 MAINTAINER Dmitri Pisarev <dimaip@gmail.com>
 
-ARG PHP_REDIS_VERSION="3.1.6"
+ARG PHP_REDIS_VERSION="5.2.1"
 ARG PHP_YAML_VERSION="2.0.4"
-ARG PHP_XDEBUG_VERSION="2.6.1"
+ARG PHP_XDEBUG_VERSION="2.9.4"
 ARG S6_VERSION="1.21.2.2"
 
 ENV FLOW_REWRITEURLS 1
@@ -36,20 +36,17 @@ RUN set -x \
 	&& apk del py-pip py-setuptools \
 	&& apk add --virtual .phpize-deps $PHPIZE_DEPS libtool freetype-dev libpng-dev libjpeg-turbo-dev yaml-dev \
 	&& docker-php-ext-configure gd \
-		--with-gd \
-		--with-freetype-dir=/usr/include/ \
-		--with-png-dir=/usr/include/ \
-		--with-jpeg-dir=/usr/include/ \
+	--with-freetype \
+	--with-jpeg \
 	&& docker-php-ext-install \
-		gd \
-		pdo \
-		pdo_mysql \
-		mbstring \
-		opcache \
-		intl \
-		exif \
-		json \
-		tokenizer \
+	gd \
+	pdo \
+	pdo_mysql \
+	opcache \
+	intl \
+	exif \
+	json \
+	tokenizer \
 	&& pecl install redis-${PHP_REDIS_VERSION} yaml-${PHP_YAML_VERSION} xdebug-${PHP_XDEBUG_VERSION} \
 	&& docker-php-ext-enable xdebug \
 	&& docker-php-ext-enable redis \
